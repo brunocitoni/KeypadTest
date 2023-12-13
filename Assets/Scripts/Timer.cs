@@ -1,46 +1,21 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
-//Implements a countdown timer/
 public class Timer : MonoBehaviour
 {
     public Action TimerElapsed;
 
     public TMP_Text timerText;
     public float timeDuration;
-    public bool isCounting;
     private float timer;
+    private Coroutine countdownCoroutine;
 
-    private void Update()
-    {
-        if (isCounting)
-        {
-            if (timer > 0)
-            {
-                // clamp at 0
-                timer = Mathf.Max(timer - Time.deltaTime, 0);
-
-                // if a text element has been given for this timer to be printed
-                if (timerText != null)
-                    FormatAndDisplayTimer();
-            }
-            else
-            {
-                // stop timer and invoke callback
-                StopTimer();
-                OnTimerFinish();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Set timer (timer must be stopped first)
-    /// </summary>
-    /// <param name="duration"></param>
     public void SetDuration(float duration)
     {
-        if (!isCounting)
+        // can only set duration if timer is not running
+        if (countdownCoroutine == null)
         {
             timeDuration = duration;
         }
@@ -48,24 +23,45 @@ public class Timer : MonoBehaviour
 
     public void ResumeTimer()
     {
-        isCounting = true;
+        if (countdownCoroutine == null)
+        {
+            StartCountdownCoroutine();
+        }
     }
 
     public void RestartTimer()
     {
         timer = timeDuration;
-        isCounting = true;
+        if (countdownCoroutine == null)
+        {
+            StartCountdownCoroutine();
+        }
     }
 
-    public void StopTimer()
+    public void StopTimer(bool invokeCallback)
     {
-        isCounting = false;
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+            countdownCoroutine = null;
+        }
         timer = 0;
+
+        // should OnTimerFinish be called if timer is stopped?
+        // matters when stopping it manually vs ending within countdown coroutine
+        if (invokeCallback)
+        {
+            OnTimerFinish();
+        }
     }
 
     public void PauseTimer()
     {
-        isCounting = false;
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+            countdownCoroutine = null;
+        }
     }
 
     public float GetTimeLeft()
@@ -78,16 +74,33 @@ public class Timer : MonoBehaviour
         TimerElapsed?.Invoke();
     }
 
-    /// <summary>
-    /// Format the time left on the timer to be displayed
-    /// </summary>
-    public void FormatAndDisplayTimer()
+    private void StartCountdownCoroutine()
     {
-        // Convert timer to TimeSpan and format
-        var timeSpan = TimeSpan.FromMilliseconds(timer*1000);
-        string formattedTime = string.Format("{0:D1}:{1:D3}", timeSpan.Seconds, timeSpan.Milliseconds);
+        countdownCoroutine = StartCoroutine(CountdownCoroutine());
+    }
 
-        // Update the timer text
+    private IEnumerator CountdownCoroutine()
+    {
+        while (timer > 0)
+        {
+            timer = Mathf.Max(timer - Time.deltaTime, 0);
+
+            if (timerText != null)
+            {
+                FormatAndDisplayTimer();
+            }
+
+            yield return null;
+        }
+
+        StopTimer(true);
+    }
+
+    private void FormatAndDisplayTimer()
+    {
+        var timeSpan = TimeSpan.FromSeconds(timer);
+        string formattedTime = string.Format("{0:D1}:{1:D2}", timeSpan.Minutes * 60 + timeSpan.Seconds, timeSpan.Milliseconds / 10);
+
         timerText.text = formattedTime;
     }
 }

@@ -21,7 +21,7 @@ public class KeypadController : MonoBehaviour
         for (int i = 1; i < 10; i++)
         {
             var keyButton = Instantiate(KeyButtonPrefab, keyGrid.transform);
-            keyButton.GetComponent<KeypadButton>().SetValue(i);
+            keyButton.GetComponent<KeypadNumericalButton>().SetValue(i);
         }
     }
 
@@ -62,7 +62,6 @@ public class KeypadController : MonoBehaviour
         _currentCode = code;
         CurrentCodeUpdated?.Invoke(_currentCode);
     }
-
 
 
     /// <summary>
@@ -107,7 +106,7 @@ public class KeypadController : MonoBehaviour
     // this is here to not have to close and open the game every time after winning or for resetting midway
     public void OnRestartButtonClicked()
     {
-        timer.StopTimer();
+        timer.StopTimer(false);
         SetCurrentCode("----");
         RestoreFunctionality?.Invoke();
     }

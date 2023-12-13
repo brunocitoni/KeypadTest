@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7351894224660976260}
   - component: {fileID: 4197401740704636821}
   m_Layer: 5
-  m_Name: KeypadButton
+  m_Name: KeypadNumericalButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba45279d17c4e464f9cb3ce5361cd686, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thisButton: {fileID: 7351894224660976260}
   keyButton: {fileID: 7351894224660976260}
   keyText: {fileID: 6582164381191185232}
 --- !u!1 &3022140097020855840

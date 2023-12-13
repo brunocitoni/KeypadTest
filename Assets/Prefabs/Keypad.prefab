@@ -554,8 +554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e0c82306842c24a8a7807af1beb0dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enterButton: {fileID: 4298011165566485218}
-  controller: {fileID: 4298011165943406478}
+  thisButton: {fileID: 4298011165566485218}
 --- !u!1 &4298011165943406480
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,7 +667,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 4298011165275917358}
   timeDuration: 9
-  isCounting: 0
 --- !u!1 &4298011166784918084
 GameObject:
   m_ObjectHideFlags: 0
